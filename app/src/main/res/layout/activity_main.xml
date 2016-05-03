@@ -2,18 +2,38 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
 
     <FrameLayout
         android:id="@+id/camera_preview"
-        android:layout_width="0px"
+        android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1" />
-
-    <Button
-        android:id="@+id/button_settings"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:text="设置" />
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/button_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设置" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerVertical="true">
+            <Button
+                android:id="@+id/button_capture_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="拍照" />
+            <Button
+                android:id="@+id/button_capture_video"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="录像" />
+        </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>
