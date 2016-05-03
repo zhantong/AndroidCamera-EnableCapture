@@ -18,6 +18,7 @@
             android:id="@+id/button_settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:text="设置" />
         <LinearLayout
             android:layout_width="wrap_content"
@@ -35,5 +36,21 @@
                 android:layout_height="wrap_content"
                 android:text="录像" />
         </LinearLayout>
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/taken_photo"
+            android:visibility="visible"
+            android:layout_alignParentBottom="true"
+            android:adjustViewBounds="true"
+            android:layout_above="@+id/taken_video"
+            android:background="#000"/>
+
+        <VideoView
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/taken_video"
+            android:visibility="invisible"
+            android:layout_alignParentBottom="true"/>
     </RelativeLayout>
 </LinearLayout>

@@ -12,6 +12,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.ImageView;
+import android.widget.VideoView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,27 +31,29 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private MediaRecorder mMediaRecorder;
     private Uri outputMediaFileUri;
 
-    private Camera.PictureCallback mPicture=new Camera.PictureCallback() {
-        @Override
-        public void onPictureTaken(byte[] data, Camera camera) {
-            File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
-            if (pictureFile == null){
-                Log.d(TAG, "Error creating media file, check storage permissions");
-                return;
+    public void takePicture(final ImageView view){
+        mCamera.takePicture(null,null,new Camera.PictureCallback() {
+            @Override
+            public void onPictureTaken(byte[] data, Camera camera) {
+                File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+                if (pictureFile == null) {
+                    Log.d(TAG, "Error creating media file, check storage permissions");
+                    return;
+                }
+                try {
+                    FileOutputStream fos = new FileOutputStream(pictureFile);
+                    fos.write(data);
+                    fos.close();
+
+                    view.setImageURI(outputMediaFileUri);
+                    camera.startPreview();
+                } catch (FileNotFoundException e) {
+                    Log.d(TAG, "File not found: " + e.getMessage());
+                } catch (IOException e) {
+                    Log.d(TAG, "Error accessing file: " + e.getMessage());
+                }
             }
-            try {
-                FileOutputStream fos = new FileOutputStream(pictureFile);
-                fos.write(data);
-                fos.close();
-            } catch (FileNotFoundException e) {
-                Log.d(TAG, "File not found: " + e.getMessage());
-            } catch (IOException e) {
-                Log.d(TAG, "Error accessing file: " + e.getMessage());
-            }
-        }
-    };
-    public void takePicture(){
-        mCamera.takePicture(null,null,mPicture);
+        });
     }
     public boolean startRecording(){
         if (prepareVideoRecorder()) {
@@ -60,9 +64,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
         return false;
     }
-    public void stopRecording(){
+    public void stopRecording(final VideoView view){
         if(mMediaRecorder!=null) {
             mMediaRecorder.stop();
+            view.setVideoURI(outputMediaFileUri);
         }
         releaseMediaRecorder();
     }
@@ -175,4 +180,5 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     public Uri getOutputMediaFileUri(){
         return outputMediaFileUri;
     }
+
 }
