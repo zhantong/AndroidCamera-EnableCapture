@@ -2,15 +2,12 @@ package com.polarxiong.camerademo;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.VideoView;
 
 /**
  * Created by zhantong on 16/4/28.
@@ -30,16 +27,12 @@ public class MainActivity extends Activity {
                 getFragmentManager().beginTransaction().replace(R.id.camera_preview, new SettingsFragment()).addToBackStack(null).commit();
             }
         });
-        final ImageView imageView  = (ImageView)findViewById(R.id.taken_photo);
-        final VideoView videoView  = (VideoView)findViewById(R.id.taken_video);
+        final ImageView mediaPreview  = (ImageView)findViewById(R.id.media_preview);
         final Button buttonCapturePhoto = (Button) findViewById(R.id.button_capture_photo);
         buttonCapturePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImageView view=(ImageView)findViewById(R.id.taken_photo);
-                mPreview.takePicture(view);
-                imageView.setVisibility(View.VISIBLE);
-                videoView.setVisibility(View.INVISIBLE);
+                mPreview.takePicture(mediaPreview);
             }
         });
         final Button buttonCaptureVideo = (Button) findViewById(R.id.button_capture_video);
@@ -47,12 +40,9 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if (isRecording) {
-                    VideoView view=(VideoView)findViewById(R.id.taken_video);
-                    mPreview.stopRecording(view);
+                    mPreview.stopRecording(mediaPreview);
                     buttonCaptureVideo.setText("录像");
                     isRecording=false;
-                    videoView.setVisibility(View.VISIBLE);
-                    imageView.setVisibility(View.INVISIBLE);
                 }else{
                     if(mPreview.startRecording()) {
                         buttonCaptureVideo.setText("停止");
@@ -61,19 +51,11 @@ public class MainActivity extends Activity {
                 }
             }
         });
-        imageView.setOnClickListener(new View.OnClickListener() {
+        mediaPreview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(MainActivity.this,ShowPhotoVideo.class);
-                intent.setDataAndType(mPreview.getOutputMediaFileUri(),"image/*");
-                startActivityForResult(intent,0);
-            }
-        });
-        videoView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(MainActivity.this,ShowPhotoVideo.class);
-                intent.setDataAndType(mPreview.getOutputMediaFileUri(),"video/*");
+                intent.setDataAndType(mPreview.getOutputMediaFileUri(),mPreview.getOutputMediaFileType());
                 startActivityForResult(intent,0);
             }
         });
