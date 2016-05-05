@@ -74,6 +74,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
         releaseMediaRecorder();
     }
+    public boolean isRecording(){
+        return mMediaRecorder!=null;
+    }
     public CameraPreview(Context context) {
         super(context);
         mHolder = getHolder();

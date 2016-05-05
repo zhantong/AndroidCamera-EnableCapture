@@ -40,7 +40,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         loadSupportedWhiteBalance();
         loadSupportedSceneMode();
         loadSupportedExposeCompensation();
-        setDefault();
         initSummary(getPreferenceScreen());
     }
 
@@ -49,21 +48,39 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         mParameters = camera.getParameters();
     }
 
-    public void setDefault() {
-        ListPreference prefPreviewSize = (ListPreference) getPreferenceScreen().findPreference(KEY_PREF_PREV_SIZE);
-        if (prefPreviewSize.getValue() == null) {
-            prefPreviewSize.setValueIndex(0);
-            ListPreference prefPictureSize = (ListPreference) getPreferenceScreen().findPreference(KEY_PREF_PIC_SIZE);
-            prefPictureSize.setValueIndex(0);
-            ListPreference prefVideoSize = (ListPreference) getPreferenceScreen().findPreference(KEY_PREF_VIDEO_SIZE);
-            prefVideoSize.setValueIndex(0);
-            ListPreference prefFocusMode = (ListPreference) getPreferenceScreen().findPreference(KEY_PREF_FOCUS_MODE);
-            if (prefFocusMode.findIndexOfValue("continuous-picture") != -1) {
-                prefFocusMode.setValue("continuous-picture");
-            } else {
-                prefFocusMode.setValue("continuous-video");
-            }
+    public static void setDefault(SharedPreferences sharedPrefs) {
+        String valPreviewSize = sharedPrefs.getString(KEY_PREF_PREV_SIZE, null);
+        if (valPreviewSize == null) {
+            SharedPreferences.Editor editor = sharedPrefs.edit();
+            editor.putString(KEY_PREF_PREV_SIZE, getDefaultPreviewSize());
+            editor.putString(KEY_PREF_PIC_SIZE, getDefaultPictureSize());
+            editor.putString(KEY_PREF_VIDEO_SIZE, getDefaultVideoSize());
+            editor.putString(KEY_PREF_FOCUS_MODE, getDefaultFocusMode());
+            editor.apply();
         }
+    }
+
+    private static String getDefaultPreviewSize() {
+        Camera.Size previewSize = mParameters.getPreviewSize();
+        return previewSize.width + "x" + previewSize.height;
+    }
+
+    private static String getDefaultPictureSize() {
+        Camera.Size pictureSize = mParameters.getPictureSize();
+        return pictureSize.width + "x" + pictureSize.height;
+    }
+
+    private static String getDefaultVideoSize() {
+        Camera.Size VideoSize = mParameters.getPreferredPreviewSizeForVideo();
+        return VideoSize.width + "x" + VideoSize.height;
+    }
+
+    private static String getDefaultFocusMode() {
+        List<String> supportedFocusModes = mParameters.getSupportedFocusModes();
+        if (supportedFocusModes.contains("continuous-picture")) {
+            return "continuous-picture";
+        }
+        return "continuous-video";
     }
 
     public static void init(SharedPreferences sharedPref) {

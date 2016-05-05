@@ -13,7 +13,6 @@ import android.widget.ImageView;
  * Created by zhantong on 16/4/28.
  */
 public class MainActivity extends Activity {
-    private boolean isRecording=false;
     private CameraPreview mPreview;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,14 +38,12 @@ public class MainActivity extends Activity {
         buttonCaptureVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isRecording) {
+                if (mPreview.isRecording()) {
                     mPreview.stopRecording(mediaPreview);
                     buttonCaptureVideo.setText("录像");
-                    isRecording=false;
                 }else{
                     if(mPreview.startRecording()) {
                         buttonCaptureVideo.setText("停止");
-                        isRecording = true;
                     }
                 }
             }
@@ -66,11 +63,8 @@ public class MainActivity extends Activity {
         preview.addView(mPreview);
 
         SettingsFragment.passCamera(mPreview.getCameraInstance());
-        if (PreferenceManager.getDefaultSharedPreferences(this).getString(SettingsFragment.KEY_PREF_PREV_SIZE, null) == null) {
-            getFragmentManager().beginTransaction().replace(R.id.camera_preview, new SettingsFragment()).addToBackStack(null).commit();
-            getFragmentManager().executePendingTransactions();
-        }
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        SettingsFragment.setDefault(PreferenceManager.getDefaultSharedPreferences(this));
         SettingsFragment.init(PreferenceManager.getDefaultSharedPreferences(this));
     }
 
